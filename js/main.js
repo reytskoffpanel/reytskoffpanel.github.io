@@ -8,7 +8,9 @@ class App {
     init() {
         this.initModals();
         this.initNavigation();
-        this.loadUsers();
+        this.loadWorkers();
+        this.loadOrders();
+        this.initEquipmentForm();
         this.initThemeToggle();
     }
 
@@ -30,12 +32,10 @@ class App {
     }
 
     initModals() {
-        // Основная форма создания пользователя
-        document.getElementById('createUserBtn').addEventListener('click', () => {
+        document.getElementById('createWorkerBtn').addEventListener('click', () => {
             this.toggleModal('userModal', true);
         });
 
-        // Формы для разных типов пользователей
         document.querySelectorAll('.open-modal').forEach(btn => {
             btn.addEventListener('click', () => {
                 const userType = btn.dataset.type;
@@ -92,52 +92,63 @@ class App {
             alert(`Пользователь ${user.fullName} успешно создан!`);
             this.toggleModal('userModal', false);
             document.getElementById('userForm').reset();
-            this.loadUsers();
+            this.loadWorkers();
         } catch (error) {
             console.error('Ошибка создания пользователя:', error);
             alert(`Ошибка: ${error.message}`);
         }
     }
 
-    async loadUsers() {
+    async loadWorkers() {
         try {
-            const { data: users, error } = await this.supabaseService.getUsers();
+            const { data: workers, error } = await this.supabaseService.getWorkers();
             
             if (error) throw error;
             
-            const container = document.getElementById('usersList');
-            container.innerHTML = users.map(user => `
-                <div class="user-card ${user.user_type}">
-                    <div class="user-icon">
-                        ${this.getUserIcon(user.user_type)}
+            const container = document.getElementById('workersList');
+            container.innerHTML = workers.map(worker => `
+                <div class="worker-card">
+                    <div class="worker-info">
+                        <div class="worker-avatar">
+                            ${this.getWorkerIcon(worker.user_type)}
+                        </div>
+                        <div class="worker-details">
+                            <h3>${worker.full_name}</h3>
+                            <p>${this.getWorkerType(worker.user_type)}</p>
+                            <p>Email: ${worker.email}</p>
+                        </div>
                     </div>
-                    <h3>${user.full_name}</h3>
-                    <p>Тип: ${this.getUserType(user.user_type)}</p>
-                    <p>Email: ${user.email}</p>
-                    <p>Создан: ${new Date(user.created_at).toLocaleString()}</p>
+                    <div class="worker-actions">
+                        <button class="btn btn-primary btn-sm" onclick="app.editWorker('${worker.id}')">
+                            <i class="fas fa-edit"></i>
+                            Редактировать
+                        </button>
+                        <button class="btn btn-danger btn-sm" onclick="app.deleteWorker('${worker.id}')">
+                            <i class="fas fa-trash"></i>
+                            Удалить
+                        </button>
+                    </div>
                 </div>
             `).join('');
         } catch (error) {
-            console.error('Ошибка загрузки пользователей:', error);
+            console.error('Ошибка загрузки работников:', error);
         }
     }
 
-    getUserType(type) {
+    getWorkerType(type) {
         const types = {
-            student: 'Ученик',
-            teacher: 'Учитель',
-            assistant: 'Помощник',
-            admin: 'Администратор'
+            moderator: 'Модератор',
+            delivery: 'Доставщик',
+            seller: 'Продавец'
         };
         return types[type] || 'Неизвестно';
     }
 
-    getUserIcon(type) {
+    getWorkerIcon(type) {
         const icons = {
-            student: '<i class="fas fa-user-graduate"></i>',
-            teacher: '<i class="fas fa-chalkboard-teacher"></i>',
-            assistant: '<i class="fas fa-hands-helping"></i>',
-            admin: '<i class="fas fa-user-cog"></i>'
+            moderator: '<i class="fas fa-user-shield"></i>',
+            delivery: '<i class="fas fa-truck"></i>',
+            seller: '<i class="fas fa-store"></i>'
         };
         return icons[type] || '<i class="fas fa-user"></i>';
     }
@@ -152,14 +163,76 @@ class App {
     }
 
     setActiveSection(section) {
+        // Update navigation
         document.querySelectorAll('.nav-link').forEach(link => {
             link.classList.remove('active');
+            if (link.dataset.section === section) {
+                link.classList.add('active');
+            }
         });
-        event.target.classList.add('active');
-        console.log('Переход в раздел:', section);
+
+        // Show/hide sections
+        document.querySelectorAll('.content-section').forEach(sectionEl => {
+            sectionEl.classList.add('hidden');
+        });
+        document.getElementById(`${section}Section`).classList.remove('hidden');
+    }
+
+    async loadOrders() {
+        try {
+            const { data: orders, error } = await this.supabaseService.getOrders();
+            
+            if (error) throw error;
+            
+            const container = document.querySelector('.orders-list');
+            container.innerHTML = orders.map(order => `
+                <div class="order-card">
+                    <div class="order-header">
+                        <h3>Заказ #${order.id}</h3>
+                        <span class="order-time">${new Date(order.created_at).toLocaleTimeString()}</span>
+                    </div>
+                    <div class="order-details">
+                        <p><strong>Тип заказа:</strong> <span class="order-type">${order.type}</span></p>
+                        <p><strong>Цена:</strong> <span class="order-price">${order.price} ₽</span></p>
+                        <p><strong>Адрес:</strong> <span class="order-address">${order.address}</span></p>
+                        <p><strong>Телефон:</strong> <span class="order-phone">${order.phone}</span></p>
+                    </div>
+                </div>
+            `).join('');
+        } catch (error) {
+            console.error('Ошибка загрузки заказов:', error);
+        }
+    }
+
+    initEquipmentForm() {
+        const form = document.getElementById('equipmentForm');
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            await this.addEquipment();
+        });
+    }
+
+    async addEquipment() {
+        const equipment = {
+            name: document.getElementById('equipmentName').value,
+            model: document.getElementById('equipmentModel').value,
+            description: document.getElementById('equipmentDescription').value
+        };
+
+        try {
+            const { data, error } = await this.supabaseService.addEquipment(equipment);
+            
+            if (error) throw error;
+            
+            alert('Техника успешно добавлена!');
+            document.getElementById('equipmentForm').reset();
+        } catch (error) {
+            console.error('Ошибка добавления техники:', error);
+            alert(`Ошибка: ${error.message}`);
+        }
     }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    new App();
+    window.app = new App();
 });
