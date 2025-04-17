@@ -74,6 +74,12 @@
                         </a>
                     </li>
                     <li class="nav-item">
+                        <a href="#" class="nav-link" data-section="workers">
+                            <i class="fas fa-users"></i>
+                            <span>Работники</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
                         <a href="#" class="nav-link" data-section="equipment">
                             <i class="fas fa-tools"></i>
                             <span>Техника</span>
@@ -158,7 +164,7 @@
                 </div>
 
                 <!-- Workers Section -->
-                <div id="workersSection" class="content-section">
+                <div id="workersSection" class="content-section hidden">
                     <div class="content-header">
                         <h2 class="content-title">Работники</h2>
                         <button id="createWorkerBtn" class="btn btn-primary">
@@ -167,42 +173,8 @@
                         </button>
                     </div>
 
-                    <div id="workersList" class="user-cards">
-                        <div class="user-card moderator">
-                            <div class="user-icon">
-                                <i class="fas fa-user-shield"></i>
-                            </div>
-                            <h3>Создать модератора</h3>
-                            <p>Добавьте нового модератора с правами управления заказами.</p>
-                            <button class="btn btn-primary btn-sm open-modal" data-type="moderator">
-                                <i class="fas fa-plus"></i>
-                                Создать
-                            </button>
-                        </div>
-
-                        <div class="user-card delivery">
-                            <div class="user-icon">
-                                <i class="fas fa-truck"></i>
-                            </div>
-                            <h3>Создать доставщика</h3>
-                            <p>Добавьте нового сотрудника службы доставки.</p>
-                            <button class="btn btn-primary btn-sm open-modal" data-type="delivery">
-                                <i class="fas fa-plus"></i>
-                                Создать
-                            </button>
-                        </div>
-
-                        <div class="user-card seller">
-                            <div class="user-icon">
-                                <i class="fas fa-store"></i>
-                            </div>
-                            <h3>Создать продавца</h3>
-                            <p>Добавьте нового продавца для работы с заказами.</p>
-                            <button class="btn btn-primary btn-sm open-modal" data-type="seller">
-                                <i class="fas fa-plus"></i>
-                                Создать
-                            </button>
-                        </div>
+                    <div id="workersList" class="workers-list">
+                        <!-- Workers will be loaded here dynamically -->
                     </div>
                 </div>
 
@@ -259,24 +231,27 @@
         </div>
     </div>
 
-    <!-- Modal for Creating User -->
+    <!-- Modal for Creating Worker -->
     <div class="modal hidden" id="userModal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3 class="modal-title">Создание нового пользователя</h3>
+                <h3 class="modal-title">Создание нового работника</h3>
                 <button class="close-modal">&times;</button>
             </div>
             <form id="userForm">
-                <input type="hidden" id="userType">
+                <div class="form-group">
+                    <label for="userType">Тип работника</label>
+                    <select id="userType" class="form-control" required>
+                        <option value="">Выберите тип работника</option>
+                        <option value="moderator">Модератор</option>
+                        <option value="delivery">Доставщик</option>
+                        <option value="seller">Продавец</option>
+                    </select>
+                </div>
                 
                 <div class="form-group">
                     <label for="fullName">Полное имя</label>
                     <input type="text" id="fullName" class="form-control" placeholder="Иванов Иван Иванович" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="username">Логин</label>
-                    <input type="text" id="username" class="form-control" placeholder="Придумайте логин" required>
                 </div>
                 
                 <div class="form-group">
@@ -296,7 +271,7 @@
                 
                 <button type="submit" class="btn btn-primary">
                     <i class="fas fa-user-plus"></i>
-                    Создать пользователя
+                    Создать работника
                 </button>
             </form>
         </div>
