@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>eldevcreator Panel</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+    <!-- Auth Container -->
+    <div id="authContainer" class="auth-container">
+        <div class="auth-box">
+            <div class="auth-header">
+                <i class="fas fa-user-shield"></i>
+                <h2>Вход в систему</h2>
+            </div>
+            <form id="authForm">
+                <div class="form-group">
+                    <label for="authEmail">Email</label>
+                    <input type="email" id="authEmail" class="form-control" placeholder="eldevcreator@gmail.com" required>
+                </div>
+                
+                <div class="form-group password-group">
+                    <label for="authPassword">Пароль</label>
+                    <div class="password-input">
+                        <input type="password" id="authPassword" class="form-control" placeholder="Пароль" required>
+                        <i class="fas fa-eye" id="togglePassword"></i>
+                    </div>
+                </div>
+                
+                <div id="authError" class="error-message"></div>
+                
+                <button type="submit" class="btn btn-primary btn-block">
+                    <i class="fas fa-sign-in-alt"></i>
+                    Войти
+                </button>
+                
+                <div class="auth-divider">или</div>
+                
+                <button type="button" id="googleAuthBtn" class="btn btn-google btn-block">
+                    <i class="fab fa-google"></i>
+                    Войти через Google
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Main Container (hidden by default) -->
+    <div id="mainContainer" class="container hidden">
+        <header>
+            <div class="logo">
+                <i class="fas fa-user-shield"></i>
+                <h1>eldevcreator Panel</h1>
+            </div>
+            <div class="user-info">
+                <div class="user-avatar" id="userAvatar">EA</div>
+                <span id="userName">eldevcreator Admin</span>
+                <button id="logoutBtn" class="btn btn-sm btn-danger">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
+            </div>
+        </header>
+
+        <div class="dashboard">
+            <aside class="sidebar">
+                <h3 class="nav-title">Навигация</h3>
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="#" class="nav-link active" data-section="orders">
+                            <i class="fas fa-shopping-cart"></i>
+                            <span>Заказы</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link" data-section="workers">
+                            <i class="fas fa-users"></i>
+                            <span>Работники</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link" data-section="equipment">
+                            <i class="fas fa-tools"></i>
+                            <span>Техника</span>
+                        </a>
+                    </li>
+                </ul>
+
+                <h3 class="nav-title">Администрирование</h3>
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="#" class="nav-link" data-section="database">
+                            <i class="fas fa-database"></i>
+                            <span>База данных</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link" data-section="server">
+                            <i class="fas fa-server"></i>
+                            <span>Сервер</span>
+                        </a>
+                    </li>
+                </ul>
+            </aside>
+
+            <main class="content">
+                <div class="content-header">
+                    <h2 class="content-title">Создание новых пользователей</h2>
+                    <button id="createUserBtn" class="btn btn-primary">
+                        <i class="fas fa-plus"></i>
+                        Быстрое создание
+                    </button>
+                </div>
+
+                <div id="usersList" class="user-cards">
+                    <div class="user-card student">
+                        <div class="user-icon">
+                            <i class="fas fa-user-graduate"></i>
+                        </div>
+                        <h3>Создать ученика</h3>
+                        <p>Добавьте нового ученика в систему с ограниченными правами доступа.</p>
+                        <button class="btn btn-primary btn-sm open-modal" data-type="student">
+                            <i class="fas fa-plus"></i>
+                            Создать
+                        </button>
+                    </div>
+
+                    <div class="user-card teacher">
+                        <div class="user-icon">
+                            <i class="fas fa-chalkboard-teacher"></i>
+                        </div>
+                        <h3>Создать учителя</h3>
+                        <p>Добавьте преподавателя с доступом к учебным материалам.</p>
+                        <button class="btn btn-primary btn-sm open-modal" data-type="teacher">
+                            <i class="fas fa-plus"></i>
+                            Создать
+                        </button>
+                    </div>
+
+                    <div class="user-card assistant">
+                        <div class="user-icon">
+                            <i class="fas fa-hands-helping"></i>
+                        </div>
+                        <h3>Создать помощника</h3>
+                        <p>Добавьте ассистента преподавателя с ограниченными правами.</p>
+                        <button class="btn btn-primary btn-sm open-modal" data-type="assistant">
+                            <i class="fas fa-plus"></i>
+                            Создать
+                        </button>
+                    </div>
+
+                    <div class="user-card admin">
+                        <div class="user-icon">
+                            <i class="fas fa-user-cog"></i>
+                        </div>
+                        <h3>Создать администратора</h3>
+                        <p>Добавьте нового администратора системы с полными правами.</p>
+                        <button class="btn btn-primary btn-sm open-modal" data-type="admin">
+                            <i class="fas fa-plus"></i>
+                            Создать
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Workers Section -->
+                <div id="workersSection" class="content-section hidden">
+                    <div class="content-header">
+                        <h2 class="content-title">Создание работников</h2>
+                    </div>
+
+                    <div class="user-cards">
+                        <div class="user-card moderator">
+                            <div class="user-icon">
+                                <i class="fas fa-user-shield"></i>
+                            </div>
+                            <h3>Создать модератора</h3>
+                            <p>Добавьте нового модератора с правами управления заказами.</p>
+                            <button class="btn btn-primary btn-sm open-modal" data-type="moderator">
+                                <i class="fas fa-plus"></i>
+                                Создать
+                            </button>
+                        </div>
+
+                        <div class="user-card delivery">
+                            <div class="user-icon">
+                                <i class="fas fa-truck"></i>
+                            </div>
+                            <h3>Создать доставщика</h3>
+                            <p>Добавьте нового сотрудника службы доставки.</p>
+                            <button class="btn btn-primary btn-sm open-modal" data-type="delivery">
+                                <i class="fas fa-plus"></i>
+                                Создать
+                            </button>
+                        </div>
+
+                        <div class="user-card seller">
+                            <div class="user-icon">
+                                <i class="fas fa-store"></i>
+                            </div>
+                            <h3>Создать продавца</h3>
+                            <p>Добавьте нового продавца для работы с заказами.</p>
+                            <button class="btn btn-primary btn-sm open-modal" data-type="seller">
+                                <i class="fas fa-plus"></i>
+                                Создать
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="content-header" style="margin-top: 40px;">
+                        <h2 class="content-title">Список работников</h2>
+                    </div>
+                    <div id="workersList" class="workers-list">
+                        <!-- Workers will be loaded here dynamically -->
+                    </div>
+                </div>
+
+                <!-- Orders Section -->
+                <div id="ordersSection" class="content-section">
+                    <div class="content-header">
+                        <h2 class="content-title">Заказы</h2>
+                    </div>
+                    <div class="orders-list">
+                        <div class="order-card">
+                            <div class="order-header">
+                                <h3>Заказ #1</h3>
+                                <span class="order-time">12:30</span>
+                            </div>
+                            <div class="order-details">
+                                <p><strong>Тип заказа:</strong> <span class="order-type">Ремонт</span></p>
+                                <p><strong>Цена:</strong> <span class="order-price">1500 ₽</span></p>
+                                <p><strong>Адрес:</strong> <span class="order-address">ул. Примерная, д. 1</span></p>
+                                <p><strong>Телефон:</strong> <span class="order-phone">+7 (999) 123-45-67</span></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Equipment Section -->
+                <div id="equipmentSection" class="content-section hidden">
+                    <div class="content-header">
+                        <h2 class="content-title">Добавление новой техники</h2>
+                        <button id="addEquipmentBtn" class="btn btn-primary">
+                            <i class="fas fa-plus"></i>
+                            Добавить технику
+                        </button>
+                    </div>
+                    <form id="equipmentForm" class="equipment-form">
+                        <div class="form-group">
+                            <label for="equipmentName">Название техники</label>
+                            <input type="text" id="equipmentName" class="form-control" placeholder="Например: Стиральная машина" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="equipmentModel">Модель</label>
+                            <input type="text" id="equipmentModel" class="form-control" placeholder="Модель техники" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="equipmentDescription">Описание</label>
+                            <textarea id="equipmentDescription" class="form-control" placeholder="Описание техники" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i>
+                            Сохранить
+                        </button>
+                    </form>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Modal for Creating Worker -->
+    <div class="modal hidden" id="userModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Создание нового работника</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <form id="userForm">
+                <div class="form-group">
+                    <label for="userType">Тип работника</label>
+                    <select id="userType" class="form-control" required>
+                        <option value="">Выберите тип работника</option>
+                        <option value="moderator">Модератор</option>
+                        <option value="delivery">Доставщик</option>
+                        <option value="seller">Продавец</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="fullName">Полное имя</label>
+                    <input type="text" id="fullName" class="form-control" placeholder="Иванов Иван Иванович" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="userEmail">Email</label>
+                    <input type="email" id="userEmail" class="form-control" placeholder="email@example.com" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="userPassword">Пароль</label>
+                    <input type="password" id="userPassword" class="form-control" placeholder="Создайте надежный пароль" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="confirmPassword">Подтверждение пароля</label>
+                    <input type="password" id="confirmPassword" class="form-control" placeholder="Повторите пароль" required>
+                </div>
+                
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-user-plus"></i>
+                    Создать работника
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/supabase-config.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
