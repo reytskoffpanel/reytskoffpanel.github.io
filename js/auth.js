@@ -27,8 +27,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const email = document.getElementById('authEmail').value;
         const password = authPassword.value;
 
-        if (email !== 'eldevcreator@gmail.com') {
-            showAuthError('Доступ разрешен только для eldevcreator@gmail.com');
+        if (email !== 'pereprice@gmail.com') {
+            showAuthError('Доступ разрешен только для pereprice@gmail.com');
             return;
         }
 
