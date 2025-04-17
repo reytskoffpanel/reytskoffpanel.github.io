@@ -25,7 +25,7 @@ class SupabaseService {
     if (authError) throw authError;
 
     const { error: dbError } = await this.client
-      .from('users')
+      .from('workers')
       .insert({
         id: authData.user.id,
         email,
@@ -38,6 +38,27 @@ class SupabaseService {
     return authData.user;
   }
 
+  async getWorkers() {
+    return await this.client
+      .from('workers')
+      .select('*')
+      .order('created_at', { ascending: false });
+  }
+
+  async updateWorker(id, data) {
+    return await this.client
+      .from('workers')
+      .update(data)
+      .eq('id', id);
+  }
+
+  async deleteWorker(id) {
+    return await this.client
+      .from('workers')
+      .delete()
+      .eq('id', id);
+  }
+
   async getUsers(page = 1, limit = 10) {
     const from = (page - 1) * limit;
     const to = from + limit - 1;
@@ -46,6 +67,30 @@ class SupabaseService {
       .from('users')
       .select('*', { count: 'exact' })
       .range(from, to)
+      .order('created_at', { ascending: false });
+  }
+
+  async getOrders() {
+    return await this.client
+      .from('orders')
+      .select('*')
+      .order('created_at', { ascending: false });
+  }
+
+  async addEquipment(equipment) {
+    return await this.client
+      .from('equipment')
+      .insert({
+        name: equipment.name,
+        model: equipment.model,
+        description: equipment.description
+      });
+  }
+
+  async getEquipment() {
+    return await this.client
+      .from('equipment')
+      .select('*')
       .order('created_at', { ascending: false });
   }
 }
