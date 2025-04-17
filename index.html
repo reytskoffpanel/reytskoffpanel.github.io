@@ -68,27 +68,15 @@
                 <h3 class="nav-title">Навигация</h3>
                 <ul class="nav-menu">
                     <li class="nav-item">
-                        <a href="#" class="nav-link active" data-section="users">
-                            <i class="fas fa-users-cog"></i>
-                            <span>Управление пользователями</span>
+                        <a href="#" class="nav-link active" data-section="orders">
+                            <i class="fas fa-shopping-cart"></i>
+                            <span>Заказы</span>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="#" class="nav-link" data-section="security">
-                            <i class="fas fa-lock"></i>
-                            <span>Безопасность</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#" class="nav-link" data-section="stats">
-                            <i class="fas fa-chart-line"></i>
-                            <span>Статистика</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#" class="nav-link" data-section="settings">
-                            <i class="fas fa-cog"></i>
-                            <span>Настройки</span>
+                        <a href="#" class="nav-link" data-section="equipment">
+                            <i class="fas fa-tools"></i>
+                            <span>Техника</span>
                         </a>
                     </li>
                 </ul>
@@ -167,6 +155,105 @@
                             Создать
                         </button>
                     </div>
+                </div>
+
+                <!-- Workers Section -->
+                <div id="workersSection" class="content-section">
+                    <div class="content-header">
+                        <h2 class="content-title">Работники</h2>
+                        <button id="createWorkerBtn" class="btn btn-primary">
+                            <i class="fas fa-plus"></i>
+                            Создать работника
+                        </button>
+                    </div>
+
+                    <div id="workersList" class="user-cards">
+                        <div class="user-card moderator">
+                            <div class="user-icon">
+                                <i class="fas fa-user-shield"></i>
+                            </div>
+                            <h3>Создать модератора</h3>
+                            <p>Добавьте нового модератора с правами управления заказами.</p>
+                            <button class="btn btn-primary btn-sm open-modal" data-type="moderator">
+                                <i class="fas fa-plus"></i>
+                                Создать
+                            </button>
+                        </div>
+
+                        <div class="user-card delivery">
+                            <div class="user-icon">
+                                <i class="fas fa-truck"></i>
+                            </div>
+                            <h3>Создать доставщика</h3>
+                            <p>Добавьте нового сотрудника службы доставки.</p>
+                            <button class="btn btn-primary btn-sm open-modal" data-type="delivery">
+                                <i class="fas fa-plus"></i>
+                                Создать
+                            </button>
+                        </div>
+
+                        <div class="user-card seller">
+                            <div class="user-icon">
+                                <i class="fas fa-store"></i>
+                            </div>
+                            <h3>Создать продавца</h3>
+                            <p>Добавьте нового продавца для работы с заказами.</p>
+                            <button class="btn btn-primary btn-sm open-modal" data-type="seller">
+                                <i class="fas fa-plus"></i>
+                                Создать
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Orders Section -->
+                <div id="ordersSection" class="content-section">
+                    <div class="content-header">
+                        <h2 class="content-title">Заказы</h2>
+                    </div>
+                    <div class="orders-list">
+                        <div class="order-card">
+                            <div class="order-header">
+                                <h3>Заказ #1</h3>
+                                <span class="order-time">12:30</span>
+                            </div>
+                            <div class="order-details">
+                                <p><strong>Тип заказа:</strong> <span class="order-type">Ремонт</span></p>
+                                <p><strong>Цена:</strong> <span class="order-price">1500 ₽</span></p>
+                                <p><strong>Адрес:</strong> <span class="order-address">ул. Примерная, д. 1</span></p>
+                                <p><strong>Телефон:</strong> <span class="order-phone">+7 (999) 123-45-67</span></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Equipment Section -->
+                <div id="equipmentSection" class="content-section hidden">
+                    <div class="content-header">
+                        <h2 class="content-title">Добавление новой техники</h2>
+                        <button id="addEquipmentBtn" class="btn btn-primary">
+                            <i class="fas fa-plus"></i>
+                            Добавить технику
+                        </button>
+                    </div>
+                    <form id="equipmentForm" class="equipment-form">
+                        <div class="form-group">
+                            <label for="equipmentName">Название техники</label>
+                            <input type="text" id="equipmentName" class="form-control" placeholder="Например: Стиральная машина" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="equipmentModel">Модель</label>
+                            <input type="text" id="equipmentModel" class="form-control" placeholder="Модель техники" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="equipmentDescription">Описание</label>
+                            <textarea id="equipmentDescription" class="form-control" placeholder="Описание техники" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i>
+                            Сохранить
+                        </button>
+                    </form>
                 </div>
             </main>
         </div>
